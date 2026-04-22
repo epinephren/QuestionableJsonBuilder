@@ -4,6 +4,12 @@ Questionable JSON Builder is a Dalamud plugin for Final Fantasy XIV that helps c
 
 It loads quest data from the game, compares it against the Questionable repository, shows which quests are already implemented, and guides the user through building valid quest steps and sequences.
 
+
+## TL;DR
+
+- Addon for the "Questionable" plugin. Provides a structured way to build JSON configs programmatically instead of writing them manually.
+
+
 ## Features
 
 - Quest search and selection from in-game data
