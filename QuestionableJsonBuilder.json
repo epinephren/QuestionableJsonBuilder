@@ -1,0 +1,15 @@
+{
+  "Author": "epinephren",
+  "Name": "Questionable JSON Builder",
+  "Punchline": "Shows all quests and marks Questionable support state.",
+  "Description": "Loads all quests from game data, compares them against Questionable, greys out implemented quests, and guides contributors for missing quests. Website: https://epinephren.github.io/",
+  "InternalName": "QuestionableJsonBuilder",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "questionable",
+    "quests",
+    "json",
+    "contributor",
+    "search"
+  ]
+}
