@@ -15,17 +15,9 @@ public sealed class QuestWizardController : IDisposable
     private readonly IClientState clientState;
 
     private bool gameDataLoaded;
-    private string _outputText = string.Empty;
-    private string _statusText = "Waiting for game data...";
 
-    public QuestWizardState State { get; } = new();
-    public string OutputText {
-        get => _outputText;
-        private set {
-            _outputText = value;
-            Plugin.Log.Info("Output: {0}", _outputText);
-        }
-    }
+    public string OutputText { get; private set; } = string.Empty;
+    private string _statusText = "Waiting for game data...";
     public string StatusText {
         get => _statusText;
         private set {
@@ -33,7 +25,8 @@ public sealed class QuestWizardController : IDisposable
             Plugin.Log.Info("Status: {0}", _statusText);
         }
     }
-
+    
+    public QuestWizardState State { get; } = new();
     public string QuestSourceStatus
         => $"{implementedQuestService.SourceStatus} | {gameQuestCatalogService.LoadStatus}";
 
