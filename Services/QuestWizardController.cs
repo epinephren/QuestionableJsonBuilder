@@ -15,10 +15,24 @@ public sealed class QuestWizardController : IDisposable
     private readonly IClientState clientState;
 
     private bool gameDataLoaded;
+    private string _outputText = string.Empty;
+    private string _statusText = "Waiting for game data...";
 
     public QuestWizardState State { get; } = new();
-    public string OutputText { get; private set; } = string.Empty;
-    public string StatusText { get; private set; } = "Waiting for game data...";
+    public string OutputText {
+        get => _outputText;
+        private set {
+            _outputText = value;
+            Plugin.Log.Info("Output: {0}", _outputText);
+        }
+    }
+    public string StatusText {
+        get => _statusText;
+        private set {
+            _statusText = value;
+            Plugin.Log.Info("Status: {0}", _statusText);
+        }
+    }
 
     public string QuestSourceStatus
         => $"{implementedQuestService.SourceStatus} | {gameQuestCatalogService.LoadStatus}";
@@ -27,14 +41,14 @@ public sealed class QuestWizardController : IDisposable
     public int ImplementedQuestCount => implementedQuestService.ImplementedQuestIds.Count;
     public bool RepoContainsQuest(ushort questId) => implementedQuestService.ImplementedQuestIds.Contains(questId);
 
-    public QuestWizardController(Configuration configuration, IObjectTable objectTable, IClientState clientState, IDataManager dataManager)
+    public QuestWizardController()
     {
-        this.configuration = configuration;
-        this.objectTable = objectTable;
-        this.clientState = clientState;
+        this.configuration = Plugin.Configuration;
+        this.objectTable = Plugin.ObjectTable;
+        this.clientState = Plugin.ClientState;
 
         implementedQuestService = new RemoteQuestIndexService(configuration.RemoteQuestIndexUrl);
-        gameQuestCatalogService = new GameQuestCatalogService(dataManager);
+        gameQuestCatalogService = new GameQuestCatalogService(Plugin.DataManager);
 
         State.Author = configuration.DefaultAuthor;
 

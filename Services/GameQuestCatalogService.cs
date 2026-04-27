@@ -8,8 +8,15 @@ public sealed class GameQuestCatalogService
 {
     private readonly IDataManager dataManager;
     private List<QuestSearchEntry>? cachedEntries;
+    private string _loadStatus = "Game quest catalog not loaded.";
 
-    public string LoadStatus { get; private set; } = "Game quest catalog not loaded.";
+    public string LoadStatus {
+        get => _loadStatus;
+        private set {
+            _loadStatus = value;
+            Plugin.Log.Info("LoadStatus: {0}", _loadStatus);
+        }
+    }
     public QuestCatalogDebugSnapshot LastDebugSnapshot { get; private set; } = new();
     public bool HasLoadedUsableQuests => cachedEntries is { Count: > 0 };
 

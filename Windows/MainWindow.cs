@@ -384,16 +384,16 @@ public sealed class MainWindow : Window
     private readonly Dictionary<int, string> stepAddSearchBySequence = new();
     private readonly Dictionary<string, string> comboSearch = new();
 
-    public MainWindow(QuestWizardController controller, Configuration configuration)
-        : this(controller, configuration, null, null)
+    public MainWindow(QuestWizardController controller)
+        : this(controller, null, null)
     {
     }
 
-    public MainWindow(QuestWizardController controller, Configuration configuration, Action? openDebugUi, Action? openHelpUi)
+    public MainWindow(QuestWizardController controller, Action? openDebugUi, Action? openHelpUi)
         : base("Questionable JSON Builder")
     {
         this.controller = controller;
-        this.configuration = configuration;
+        this.configuration = Plugin.Configuration;
         this.openDebugUi = openDebugUi;
         this.openHelpUi = openHelpUi;
 

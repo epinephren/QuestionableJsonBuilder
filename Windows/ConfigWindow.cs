@@ -11,10 +11,10 @@ public sealed class ConfigWindow : Window
     private readonly Configuration configuration;
     private readonly QuestWizardController controller;
 
-    public ConfigWindow(Configuration configuration, QuestWizardController controller)
+    public ConfigWindow(QuestWizardController controller)
         : base("Questionable JSON Builder Settings")
     {
-        this.configuration = configuration;
+        this.configuration = Plugin.Configuration;
         this.controller = controller;
         this.Size = new Vector2(700, 360);
         this.SizeCondition = ImGuiCond.FirstUseEver;

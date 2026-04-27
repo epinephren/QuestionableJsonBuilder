@@ -10,13 +10,16 @@ namespace QuestionableJsonBuilder;
 
 public sealed class Plugin : IDalamudPlugin
 {
+    internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
+    internal static ICommandManager CommandManager { get; private set; } = null!;
+    internal static IObjectTable ObjectTable { get; private set; } = null!;
+    internal static IClientState ClientState { get; private set; } = null!;
+    internal static IDataManager DataManager { get; private set; } = null!;
+    internal static IPluginLog Log { get; private set; } = null!;
+    internal static Configuration Configuration { get; private set; } = null!;
     private const string CommandName = "/qstb";
 
-
-    private readonly IDalamudPluginInterface pluginInterface;
-    private readonly ICommandManager commandManager;
     private readonly WindowSystem windowSystem = new("QuestionableJsonBuilder");
-    private readonly Configuration configuration;
 
     private readonly QuestWizardController controller;
     private readonly MainWindow mainWindow;
@@ -29,18 +32,22 @@ public sealed class Plugin : IDalamudPlugin
         ICommandManager commandManager,
         IObjectTable objectTable,
         IClientState clientState,
-        IDataManager dataManager)
+        IDataManager dataManager,
+        IPluginLog pluginLog)
     {
-        this.pluginInterface = pluginInterface;
-        this.commandManager = commandManager;
+        PluginInterface = pluginInterface;
+        CommandManager = commandManager;
+        ObjectTable = objectTable;
+        ClientState = clientState;
+        DataManager = dataManager;
+        Log = pluginLog;
+        Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Configuration.Initialize(pluginInterface);
 
-        this.configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        this.configuration.Initialize(pluginInterface);
-
-        this.controller = new QuestWizardController(this.configuration, objectTable, clientState, dataManager);
+        this.controller = new QuestWizardController();
         this.helpWindow = new HelpWindow();
-        this.mainWindow = new MainWindow(this.controller, this.configuration, this.OpenDebugUi, this.OpenHelpUi);
-        this.configWindow = new ConfigWindow(this.configuration, this.controller);
+        this.mainWindow = new MainWindow(this.controller, this.OpenDebugUi, this.OpenHelpUi);
+        this.configWindow = new ConfigWindow(this.controller);
         this.questDebugWindow = new QuestDebugWindow(this.controller);
 
         this.windowSystem.AddWindow(this.mainWindow);
@@ -48,14 +55,14 @@ public sealed class Plugin : IDalamudPlugin
         this.windowSystem.AddWindow(this.questDebugWindow);
         this.windowSystem.AddWindow(this.helpWindow);
 
-        this.commandManager.AddHandler(CommandName, new CommandInfo(this.OnCommand)
+        CommandManager.AddHandler(CommandName, new CommandInfo(this.OnCommand)
         {
             HelpMessage = "Open the Questionable JSON Builder."
         });
 
-        this.pluginInterface.UiBuilder.Draw += this.DrawUi;
-        this.pluginInterface.UiBuilder.OpenMainUi += this.OpenMainUi;
-        this.pluginInterface.UiBuilder.OpenConfigUi += this.OpenConfigUi;
+        pluginInterface.UiBuilder.Draw += this.DrawUi;
+        pluginInterface.UiBuilder.OpenMainUi += this.OpenMainUi;
+        pluginInterface.UiBuilder.OpenConfigUi += this.OpenConfigUi;
     }
 
     private void OnCommand(string command, string arguments)
@@ -69,11 +76,11 @@ public sealed class Plugin : IDalamudPlugin
 
     public void Dispose()
     {
-        this.pluginInterface.UiBuilder.Draw -= this.DrawUi;
-        this.pluginInterface.UiBuilder.OpenMainUi -= this.OpenMainUi;
-        this.pluginInterface.UiBuilder.OpenConfigUi -= this.OpenConfigUi;
+        PluginInterface.UiBuilder.Draw -= this.DrawUi;
+        PluginInterface.UiBuilder.OpenMainUi -= this.OpenMainUi;
+        PluginInterface.UiBuilder.OpenConfigUi -= this.OpenConfigUi;
 
-        this.commandManager.RemoveHandler(CommandName);
+        CommandManager.RemoveHandler(CommandName);
         this.windowSystem.RemoveAllWindows();
         this.controller.Dispose();
     }
