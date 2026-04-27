@@ -1,5 +1,19 @@
+# Build output
 bin/
 obj/
+
+# Rider / VS
 .vs/
+.idea/
+
+# User / temp
 *.user
 *.suo
+
+# Logs
+*.log
+
+# Release zips
+release/
+
+packages.lock.json

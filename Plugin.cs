@@ -18,6 +18,8 @@ public sealed class Plugin : IDalamudPlugin
     internal static IPluginLog Log { get; private set; } = null!;
     internal static Configuration Configuration { get; private set; } = null!;
     private const string CommandName = "/qstb";
+    private const int CurrentConfigVersion = 2;
+    private const string WorkerUrl = "https://questionable-worker.epinephren.workers.dev/";
 
     private readonly WindowSystem windowSystem = new("QuestionableJsonBuilder");
 
@@ -35,6 +37,7 @@ public sealed class Plugin : IDalamudPlugin
         IDataManager dataManager,
         IPluginLog pluginLog)
     {
+<<<<<<< main
         PluginInterface = pluginInterface;
         CommandManager = commandManager;
         ObjectTable = objectTable;
@@ -43,6 +46,22 @@ public sealed class Plugin : IDalamudPlugin
         Log = pluginLog;
         Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(pluginInterface);
+=======
+        this.pluginInterface = pluginInterface;
+        this.commandManager = commandManager;
+
+        this.configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        this.configuration.Initialize(pluginInterface);
+        
+        if (this.configuration.Version < CurrentConfigVersion ||
+            this.configuration.RemoteQuestIndexUrl.Contains("api.github.com", StringComparison.OrdinalIgnoreCase))
+        {
+            this.configuration.RemoteQuestIndexUrl = WorkerUrl;
+            this.configuration.Version = CurrentConfigVersion;
+            this.configuration.Save();
+        }
+        
+>>>>>>> main
 
         this.controller = new QuestWizardController();
         this.helpWindow = new HelpWindow();
